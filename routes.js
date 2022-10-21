@@ -72,11 +72,11 @@ routes.delete('/:id',cors(corsOptions),   (req, res)=>{
     })
 } )
 
-routes.put('/:numero_accion',cors(corsOptions),  (req, res)=>{
+routes.put('/:id',cors(corsOptions),  (req, res)=>{
     req.getConnection((err, conn)=> {
         if(err) return res.send(err)
 
-        conn.query('UPDATE seguimiento set ? WHERE numero_accion = ?', [req.body, req.params.numero_accion], (err, rows)=>{
+        conn.query('UPDATE seguimiento set ? WHERE id = ?', [req.body, req.params.id], (err, rows)=>{
             if(err || !articulo)
             {
                 return res.status(500).json({
