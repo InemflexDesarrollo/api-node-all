@@ -40,23 +40,12 @@ routes.get('/', cors(corsOptions), (req, res)=>{
 
 routes.post('/',cors(corsOptions),(req, res)=>{
     req.getConnection((err, conn)=> {
-        let parametros = req.body
-    const seguimiento =new Seguimiento(parametros)
         if(err) return res.send(err)
 
         conn.query('INSERT INTO seguimiento set ?',[req.body], (err, rows)=>{
-            if(err || !seguimiento)
-            {
-                return res.status(400).json({
-                    status: "Error",
-                    mensaje: "Metodo no agregado"
-                })
-            } 
+            if(err) return res.send(err)
 
-            return res.status(200).json({
-                status: "Success",
-                mensaje: "Metodo  agregado"
-            })
+            res.send('seguimiento insert')
         })
     })
 } )
