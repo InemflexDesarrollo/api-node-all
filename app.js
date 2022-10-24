@@ -15,9 +15,9 @@ app.set('port', process.env.PORT || 5453)
 const dbOptions = {
     host: 'sql10.freemysqlhosting.net',
     port: 3306,
-    user: 'sql10527072',
-    password: '8e1QkGTruM',
-    database: 'sql10527072'
+    user: 'sql10528966',
+    password: 'auGVSFUTrV',
+    database: 'sql10528966'
 }
 var corsOptions = {
     origin: '*',
