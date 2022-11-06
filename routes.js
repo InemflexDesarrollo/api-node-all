@@ -78,7 +78,7 @@ routes.delete('/:id',cors(corsOptions),   (req, res)=>{
 routes.put('/:id',cors(corsOptions),  (req, res)=>{
     req.getConnection((err, conn)=> {
         if(err) return res.send(err)
-
+        var articulo = req.params.id
         conn.query('UPDATE seguimiento set ? WHERE id = ?', [req.body, req.params.id], (err, rows)=>{
             if(err || !articulo)
             {
@@ -90,7 +90,7 @@ routes.put('/:id',cors(corsOptions),  (req, res)=>{
 
             return res.status(200).json({
                 status: "Success",
-                mensaje: "Metodo  borrado"
+                mensaje: "Metodo  actualizado"
             })
         })
     })
