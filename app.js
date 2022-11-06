@@ -13,11 +13,11 @@ app.set('port', process.env.PORT || 5453)
 
 
 const dbOptions = {
-    host: 'sql10.freemysqlhosting.net',
+    host: 'bf9spvhvonnsjsclcvhx-mysql.services.clever-cloud.com',
     port: 3306,
-    user: 'sql10528966',
-    password: 'auGVSFUTrV',
-    database: 'sql10528966'
+    user: 'usalutm999s3o9fh',
+    password: 'WbUTHs3GsHGCa5ypSNpM',
+    database: 'bf9spvhvonnsjsclcvhx'
 }
 var corsOptions = {
     origin: '*',
@@ -36,7 +36,7 @@ app.get('/', (req, res)=>{
 })
 
 app.use('/seguimiento', routes)
-
+app.use('/login', routes)
 
 app.listen(app.get('port'), ()=>{
     console.log('server running on port', app.get('port'))

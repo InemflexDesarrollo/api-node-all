@@ -24,6 +24,7 @@ routes.get('/:numero_accion', cors(corsOptions), (req, res)=>{
     })
 } )
 
+
 routes.get('/', cors(corsOptions), (req, res)=>{
     req.getConnection((err, conn)=> {
         if(err) return res.send(err)
@@ -49,6 +50,8 @@ routes.post('/',cors(corsOptions),(req, res)=>{
         })
     })
 } )
+
+
 
 routes.delete('/:id',cors(corsOptions),   (req, res)=>{
     req.getConnection((err, conn)=> {
@@ -92,4 +95,6 @@ routes.put('/:id',cors(corsOptions),  (req, res)=>{
         })
     })
 } )
+
+
 module.exports = routes
