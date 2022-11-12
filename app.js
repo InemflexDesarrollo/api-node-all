@@ -51,7 +51,7 @@ app.use(express.static('./uploads'))
 //})
 
 app.post('/subir', cors(corsOptions), upload.single('file'), (req,res)=>{
-    return res.send(req.file)
+    return res.send(req.file.filename)
 })
    
 
