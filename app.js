@@ -13,17 +13,18 @@ const routes = require('./routes')
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null,'uploads')
+        cb(null,'uploads/')
     },
     filename: function(req, file, cb){
         console.log(file)
-        cb(null, `${Date.now()}-${file.originalname}`)
+        cb(null, nombre =  `${file.originalname}`)
+        //console.log(nombre)
     }
 })
 
 const upload = multer(({ storage: storage}))
 const app = express()
-app.set('port', process.env.PORT || 5453)
+app.set('port', process.env.PORT || 5454)
 
 
 const dbOptions = {
@@ -46,14 +47,41 @@ app.use(express.json())
 app.use(express.static('./uploads'))
 
 //rutas
-//app.get('/upload', (req, res)=>{
-//    res.send('aaa')
-//})
-
-app.post('/subir', cors(corsOptions), upload.single('file'), (req,res)=>{
-    return res.send(req.file.filename)
+app.get('/upload/:name', (req, res)=>{
+    res.send('./uploads/')
 })
-   
+
+app.post('/subir/:id', cors(corsOptions), upload.single('file'), (req,res)=>{
+    let name =  res.send(req.file.originalname)
+    req.getConnection((err, conn)=> {
+
+        conn.query('UPDATE seguimiento set soporte_ejecucion = ?  where id = ?', [nombre, req.params.id], (err, rows)=>{
+            console.log(nombre)
+        })
+    })
+    
+})
+app.post('/subir_dos/:id', cors(corsOptions), upload.single('file'), (req,res)=>{
+    let name =  res.send(req.file.originalname)
+    req.getConnection((err, conn)=> {
+
+        conn.query('UPDATE seguimiento set soporte_ejecucion_no_eficaz_uno = ?  where id = ?', [nombre, req.params.id], (err, rows)=>{
+            console.log(nombre)
+        })
+    })
+    
+})
+
+app.post('/subir_tres/:id', cors(corsOptions), upload.single('file'), (req,res)=>{
+    let name =  res.send(req.file.originalname)
+    req.getConnection((err, conn)=> {
+
+        conn.query('UPDATE seguimiento set soporte_ejecucion_no_eficaz_dos = ?  where id = ?', [nombre, req.params.id], (err, rows)=>{
+            console.log(nombre)
+        })
+    })
+    
+})
 
 app.use('/seguimiento', routes)
 
