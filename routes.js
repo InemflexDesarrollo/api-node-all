@@ -2,7 +2,8 @@ const express = require('express')
 const routes = express.Router()
 var cors = require('cors')
 const name = require('./app.js')
-
+const PdfPrinter = require('pdfmake')
+const fs = require('fs')
 
 
 var corsOptions = {
@@ -31,7 +32,7 @@ routes.get('/', cors(corsOptions), (req, res)=>{
     req.getConnection((err, conn)=> {
         if(err) return res.send(err)
 
-        conn.query('SELECT * FROM seguimiento', (err, rows)=>{
+        conn.query('SELECT * FROM seguimiento order by id desc', (err, rows)=>{
             if(err) return res.send(err)
 
             res.json(rows)

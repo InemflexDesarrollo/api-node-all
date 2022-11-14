@@ -4,10 +4,13 @@ const myconn = require('express-myconnection')
 var cors = require('cors')
 const multer = require('multer')
 const nodemailer = require('nodemailer')
-
-
+const fonts = require("./fonts")
+const styles = require("./styles")
+const content = require("./content")
 const routes = require('./routes')
-
+const PdfPrinter = require('pdfmake')
+const fs = require('fs')
+const path = require('path');
 
 
 
@@ -89,10 +92,54 @@ app.post('/enviar_correo/:id',cors(corsOptions),(req, res)=>{
     req.getConnection((err, conn)=> {
         if(err) return res.send(err)
 
-        conn.query('SELECT responsable, numero_accion, correo_responsable FROM seguimiento where id = ?',[req.params.id], (err, rows)=>{
+        conn.query('SELECT nombre, numero_accion,proceso_origen,no_conformidad,analisis_causas,tipo_de_accion,origen_accion,accion_descripcion, objetivo,responsable,correo_responsable,fecha,fecha_de_cierre,fecha_seguimiento_uno,observacion_uno,fecha_seguimiento_dos,observacion_dos FROM seguimiento where id = ?',[req.params.id], (err, rows)=>{
             if(err) return res.send(err)
            res.json(rows)
            //console.log(rows[0].correo_responsable, rows[0].numero_accion)
+            var content = [
+                {text: 'PDF SEGUIMIENTO '+ rows[0].numero_accion, style: 'header'},
+                " ",
+                " ",
+                "Datos generados para el seguimiento",
+                " ",
+		{
+			style: 'tableExample',
+			table: {
+				body: [
+					['nombre', rows[0].nombre],
+                    ['numero_accion', rows[0].numero_accion],
+                    ['proceso_origen', rows[0].proceso_origen],
+                    ['no_conformidad', rows[0].no_conformidad],
+                    ['analisis_causas', rows[0].analisis_causas],
+                    ['tipo_de_accion', rows[0].tipo_de_accion],
+                    ['origen_accion', rows[0].origen_accion],
+                    ['accion_descripcion', rows[0].accion_descripcion],
+                    ['objetivo', rows[0].objetivo],
+                    ['responsable', rows[0].responsable],
+                    ['correo_responsable', rows[0].correo_responsable],
+                    ['fecha', rows[0].fecha],
+                    ['fecha_de_cierre', rows[0].fecha_de_cierre],
+                    ['fecha_seguimiento_uno', rows[0].fecha_seguimiento_uno],
+                    ['observacion_uno', rows[0].observacion_uno],
+                    ['fecha_seguimiento_dos', rows[0].fecha_seguimiento_dos],
+                    ['observacion_dos', rows[0].observacion_dos]
+				]
+			}
+		},
+        " ",
+        " ",
+        " ",
+        {text:"Este PDF se genera automaticamente, cambios hablar con el encargado", style: "label"},
+            ]
+           let docDefinition = {
+            content: content,
+            styles: styles
+        }
+        const printer = new PdfPrinter(fonts)
+
+        let pdfDoc = printer.createPdfKitDocument(docDefinition)
+        pdfDoc.pipe(fs.createWriteStream("pdfs/pdfTest.pdf"))
+        pdfDoc.end()
 
            async function main() {
             // Generate test SMTP service account from ethereal.email
@@ -111,11 +158,17 @@ app.post('/enviar_correo/:id',cors(corsOptions),(req, res)=>{
             });
           
             // send mail with defined transport object
+            mail = [rows[0].correo_responsable, "coor.calidad@inemflex.com.co "]
             let info = await transporter.sendMail({
                 from: "ludicolo2209@gmail.com", // sender address
-                to: rows[0].correo_responsable, // list of receivers
+                to: mail,  // list of receivers
                 subject: "Seguimiento "+rows[0].numero_accion, // Subject line
-                text: "SR/SRA "+rows[0].responsable + " Fue asignado al seguimiento "+rows[0].numero_accion, // plain text body
+                text: "Sr/Sra "+rows[0].responsable + " Fue asignado al seguimiento "+rows[0].numero_accion+ " con fecha inicial "+rows[0].fecha+ " se agradece el debido proceso a realizar", // plain text body
+                attachments: [{
+                    filename: 'pdfTest.pdf',
+                    path: path.join(__dirname, './pdfs/pdfTest.pdf'),
+                    contentType: 'application/pdf'
+                  }],
               });
           
             console.log("Message sent: %s", info.messageId);
