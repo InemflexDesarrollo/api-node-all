@@ -133,6 +133,18 @@ app.post('/enviar_correo/:id',cors(corsOptions),(req, res)=>{
     })   
     
 } )
+
+app.get('/notificaciones', cors(corsOptions), (req, res)=>{
+    req.getConnection((err, conn)=> {
+        if(err) return res.send(err)
+
+        conn.query('SELECT * FROM seguimiento ORDER BY id DESC LIMIT 10',(err, rows)=>{
+            if(err) return res.send(err)
+
+            res.json(rows)
+        })
+    })
+} )
     
 
 app.use('/seguimiento', routes)
