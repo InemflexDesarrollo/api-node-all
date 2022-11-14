@@ -89,42 +89,55 @@ app.post('/enviar_correo/:id',cors(corsOptions),(req, res)=>{
     req.getConnection((err, conn)=> {
         if(err) return res.send(err)
 
-        conn.query('SELECT numero_accion, correo_responsable FROM seguimiento where id = ?',[req.params.id], (err, rows)=>{
+        conn.query('SELECT responsable, numero_accion, correo_responsable FROM seguimiento where id = ?',[req.params.id], (err, rows)=>{
             if(err) return res.send(err)
            res.json(rows)
-           console.log(rows[0].correo_responsable, rows[0].numero_accion)
+           //console.log(rows[0].correo_responsable, rows[0].numero_accion)
 
-           
+           async function main() {
+            // Generate test SMTP service account from ethereal.email
+            // Only needed if you don't have a real mail account for testing
+            let testAccount = await nodemailer.createTestAccount();
+          
+            // create reusable transporter object using the default SMTP transport
+            let transporter = nodemailer.createTransport({
+              host: "smtp.gmail.com",
+              port: 587,
+              secure: false, // true for 465, false for other ports
+              auth: {
+                user: "ludicolo2209@gmail.com", // generated ethereal user
+                pass: "ijwtqvccamdhgpzr", // generated ethereal password
+              },
+            });
+          
+            // send mail with defined transport object
+            let info = await transporter.sendMail({
+                from: "ludicolo2209@gmail.com", // sender address
+                to: rows[0].correo_responsable, // list of receivers
+                subject: "Seguimiento "+rows[0].numero_accion, // Subject line
+                text: "SR/SRA "+rows[0].responsable + " Fue asignado al seguimiento "+rows[0].numero_accion, // plain text body
+              });
+          
+            console.log("Message sent: %s", info.messageId);
+            // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+          
+            // Preview only available when sending through an Ethereal account
+            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+            // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+          }
+          
+          main().catch(console.error);
            
            
         })    
-    })
-    enviarMail = async() =>{
-        const config ={
-            host: "smpt.gmail.com",
-            port: 465,
-            secure: true,
-            auth:{
-                user:"ludicolo2209@gmail.com",
-                pass:"ijwtqvccamdhgpzr"
-                }
-        }
-        const mensaje = {
-            from: 'ludicolo2209@gmail.com',
-            to: 'ludicolo2209@gmail.com',
-            subject: 'Seguimientos',
-            text: 'Usted es el responsable para el seguimiento '
-
-        }
-        const transport = nodemailer.createTransport(config);
-        const info = await transport.sendMail(mensaje);
-        console.log(info)
-       }
-       enviarMail()
+    })   
+    
 } )
+    
 
 app.use('/seguimiento', routes)
 
 app.listen(app.get('port'), ()=>{
     console.log('server running on port', app.get('port'))
 })
+
