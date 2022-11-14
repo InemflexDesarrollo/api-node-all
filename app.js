@@ -3,6 +3,7 @@ const mysql  = require('mysql')
 const myconn = require('express-myconnection')
 var cors = require('cors')
 const multer = require('multer')
+const nodemailer = require('nodemailer')
 
 
 const routes = require('./routes')
@@ -82,6 +83,45 @@ app.post('/subir_tres/:id', cors(corsOptions), upload.single('file'), (req,res)=
     })
     
 })
+
+
+app.post('/enviar_correo/:id',cors(corsOptions),(req, res)=>{
+    req.getConnection((err, conn)=> {
+        if(err) return res.send(err)
+
+        conn.query('SELECT numero_accion, correo_responsable FROM seguimiento where id = ?',[req.params.id], (err, rows)=>{
+            if(err) return res.send(err)
+           res.json(rows)
+           console.log(rows[0].correo_responsable, rows[0].numero_accion)
+
+           
+           
+           
+        })    
+    })
+    enviarMail = async() =>{
+        const config ={
+            host: "smpt.gmail.com",
+            port: 465,
+            secure: true,
+            auth:{
+                user:"ludicolo2209@gmail.com",
+                pass:"ijwtqvccamdhgpzr"
+                }
+        }
+        const mensaje = {
+            from: 'ludicolo2209@gmail.com',
+            to: 'ludicolo2209@gmail.com',
+            subject: 'Seguimientos',
+            text: 'Usted es el responsable para el seguimiento '
+
+        }
+        const transport = nodemailer.createTransport(config);
+        const info = await transport.sendMail(mensaje);
+        console.log(info)
+       }
+       enviarMail()
+} )
 
 app.use('/seguimiento', routes)
 
