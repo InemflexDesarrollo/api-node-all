@@ -61,7 +61,9 @@ app.post('/subir/:id', cors(corsOptions), upload.single('file'), (req,res)=>{
 
         conn.query('UPDATE seguimiento set soporte_ejecucion = ?  where id = ?', [nombre, req.params.id], (err, rows)=>{
             console.log(nombre)
+            
         })
+        
     })
     
 })
@@ -192,6 +194,18 @@ app.get('/notificaciones', cors(corsOptions), (req, res)=>{
         if(err) return res.send(err)
 
         conn.query('SELECT * FROM seguimiento ORDER BY id DESC LIMIT 10',(err, rows)=>{
+            if(err) return res.send(err)
+
+            res.json(rows)
+        })
+    })
+} )
+
+app.get('/unico/:id', cors(corsOptions), (req, res)=>{
+    req.getConnection((err, conn)=> {
+        if(err) return res.send(err)
+
+        conn.query('SELECT * FROM seguimiento where id = ?',[req.params.id], (err, rows)=>{
             if(err) return res.send(err)
 
             res.json(rows)

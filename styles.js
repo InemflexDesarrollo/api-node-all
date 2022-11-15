@@ -8,4 +8,4 @@ module.exports = {
     label: {
         color: "#000000"
     }
-}
+};
