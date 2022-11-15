@@ -59,7 +59,7 @@ app.post('/subir/:id', cors(corsOptions), upload.single('file'), (req,res)=>{
     let name =  res.send(req.file.originalname)
     req.getConnection((err, conn)=> {
 
-        conn.query('UPDATE seguimiento set soporte_ejecucion = ?  where id = ?', [nombre, req.params.id], (err, rows)=>{
+        conn.query('UPDATE seguimiento set soporte_ejecucion = ?  where id = ?', ["https://apinodeinem.herokuapp.com/"+nombre, req.params.id], (err, rows)=>{
             console.log(nombre)
             
         })
@@ -71,7 +71,7 @@ app.post('/subir_dos/:id', cors(corsOptions), upload.single('file'), (req,res)=>
     let name =  res.send(req.file.originalname)
     req.getConnection((err, conn)=> {
 
-        conn.query('UPDATE seguimiento set soporte_ejecucion_no_eficaz_uno = ?  where id = ?', [nombre, req.params.id], (err, rows)=>{
+        conn.query('UPDATE seguimiento set soporte_ejecucion_no_eficaz_uno = ?  where id = ?', ["https://apinodeinem.herokuapp.com/"+nombre, req.params.id], (err, rows)=>{
             console.log(nombre)
         })
     })
@@ -82,7 +82,7 @@ app.post('/subir_tres/:id', cors(corsOptions), upload.single('file'), (req,res)=
     let name =  res.send(req.file.originalname)
     req.getConnection((err, conn)=> {
 
-        conn.query('UPDATE seguimiento set soporte_ejecucion_no_eficaz_dos = ?  where id = ?', [nombre, req.params.id], (err, rows)=>{
+        conn.query('UPDATE seguimiento set soporte_ejecucion_no_eficaz_dos = ?  where id = ?', ["https://apinodeinem.herokuapp.com/"+nombre, req.params.id], (err, rows)=>{
             console.log(nombre)
         })
     })
@@ -94,7 +94,7 @@ app.post('/enviar_correo/:id',cors(corsOptions),(req, res)=>{
     req.getConnection((err, conn)=> {
         if(err) return res.send(err)
 
-        conn.query('SELECT nombre, numero_accion,proceso_origen,no_conformidad,analisis_causas,tipo_de_accion,origen_accion,accion_descripcion, objetivo,responsable,correo_responsable,fecha,fecha_de_cierre,fecha_seguimiento_uno,observacion_uno,fecha_seguimiento_dos,observacion_dos FROM seguimiento where id = ?',[req.params.id], (err, rows)=>{
+        conn.query('SELECT soporte_ejecucion_no_eficaz_uno,soporte_ejecucion,nombre, numero_accion,proceso_origen,no_conformidad,analisis_causas,tipo_de_accion,origen_accion,accion_descripcion, objetivo,responsable,correo_responsable,fecha,fecha_de_cierre,fecha_seguimiento_uno,observacion_uno,fecha_seguimiento_dos,observacion_dos FROM seguimiento where id = ?',[req.params.id], (err, rows)=>{
             if(err) return res.send(err)
            res.json(rows)
            //console.log(rows[0].correo_responsable, rows[0].numero_accion)
@@ -160,7 +160,7 @@ app.post('/enviar_correo/:id',cors(corsOptions),(req, res)=>{
             });
           
             // send mail with defined transport object
-            mail = [rows[0].correo_responsable, "coor.calidad@inemflex.com.co "]
+            mail = [rows[0].correo_responsable]
             let info = await transporter.sendMail({
                 from: "ludicolo2209@gmail.com", // sender address
                 to: mail,  // list of receivers
@@ -171,6 +171,7 @@ app.post('/enviar_correo/:id',cors(corsOptions),(req, res)=>{
                     path: path.join(__dirname, './pdfs/pdfTest.pdf'),
                     contentType: 'application/pdf'
                   }],
+                  
               });
           
             console.log("Message sent: %s", info.messageId);
