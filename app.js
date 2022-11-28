@@ -32,11 +32,11 @@ app.set('port', process.env.PORT || 5454)
 
 
 const dbOptions = {
-    host: 'bf9spvhvonnsjsclcvhx-mysql.services.clever-cloud.com',
+    host: 'bks3n7op2s05athvuyb4-mysql.services.clever-cloud.com',
     port: 3306,
-    user: 'usalutm999s3o9fh',
-    password: 'WbUTHs3GsHGCa5ypSNpM',
-    database: 'bf9spvhvonnsjsclcvhx'
+    user: 'u8h5y0ilxlkwiv5r',
+    password: 'aLVm87i3CxaHhnKJjTEW',
+    database: 'bks3n7op2s05athvuyb4'
 }
 var corsOptions = {
     origin: '*',
